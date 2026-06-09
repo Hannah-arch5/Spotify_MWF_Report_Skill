@@ -37,6 +37,12 @@
 - After generation, run the Gemini review checker.
 - If review says `需修改`, fix concrete findings and rerun review until `通过`.
 - Convert suspicious non-verbatim quote blocks to explicit paraphrased conclusions rather than keeping them in quotation marks.
+- Before rendering, manually inspect the Markdown for the following hard gates:
+  - Main title is constructive and thesis-led: it should tell the user what this report is really about, not merely repeat the date/run/window. It must include an English translation.
+  - Sections 3/4/5 are integrated cross-episode analysis, second-order thinking, and strategic conclusions. They must not read as per-episode summaries grouped under loose topics.
+  - Episode 1 has the same `关键金句 / 结论` quality as every other episode, including at least one source-language original sentence and an italicized translation/explanation line when useful. Translation lines must not include labels like `中文解释：`, `中文翻译：`, `中文翻译/解释：`, `英文解释：`, `英文翻译：`, or `英文翻译/解释：`.
+  - Evidence anchors are meaningful: remove greetings, thanks, ad reads, housekeeping, closing pleasantries, and generic low-value anchors. Keep anchors with concrete claims, examples, mechanisms, numbers, decisions, disagreements, or strategic implications.
+  - If exact quote verification is weak, change the item to `转述结论` and keep timestamp evidence nearby.
 
 ## 5. Render And Audit
 
@@ -44,9 +50,12 @@
 - Do not accept lower-fidelity PDF fallback for final delivery unless the user explicitly approves it.
 - Run `scripts/audit_delivery_report_format.py` on the DOCX and PDF.
 - Confirm:
+  - Main title is constructive, has English translation, and has no run ID/date pileup.
   - Expected main sections.
   - Episode heading count matches manifest.
   - Required labels match episode count.
+  - `关键金句 / 结论` exists for every episode including episode 1, and exact quotes are either source-language plus italicized unlabeled translation/explanation, or clearly marked paraphrases.
+  - Evidence anchors are substantive and do not contain low-value greetings/thanks/housekeeping as final anchors.
   - PDF page count is plausible.
   - No audit issues.
 - Record final DOCX/PDF paths and hashes.
@@ -86,7 +95,9 @@
 
 - Update `PROJECT_MEMORY.md` with:
   - Manifest, episode count, report paths.
+  - Final constructive bilingual title.
   - Review/audit result.
+  - Confirmation that title, episode 1 quote quality, and evidence-anchor quality gates passed.
   - Zotero path/hash.
   - Drive verification.
   - Discord `notification_sent` ids.
