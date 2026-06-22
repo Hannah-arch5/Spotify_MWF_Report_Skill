@@ -27,6 +27,10 @@
   - Use one tab sequentially if Spotify complains about too many open tabs.
 - Import transcripts:
   - `scripts/import_spotify_transcripts.py`
+- Enforce archive uniqueness by `spotifyEpisodeId + language`:
+  - Keep at most one original transcript and one complete Chinese transcript per episode.
+  - Treat Chrome retry suffixes such as ` (1)` as duplicate downloads, not distinct archives.
+  - Reject `_zh_INCOMPLETE` and any Chinese file containing an untranslated non-empty segment.
 - Rerun evidence/language audit and confirm required transcript coverage.
 - Chinese transcript gaps can be reported, but English/original transcript coverage is the main generation gate unless the user requires Chinese.
 
@@ -40,9 +44,9 @@
 - Before rendering, manually inspect the Markdown for the following hard gates:
   - Main title is constructive and thesis-led: it should tell the user what this report is really about, not merely repeat the date/run/window. It must include an English translation.
   - Sections 3/4/5 are integrated cross-episode analysis, second-order thinking, and strategic conclusions. They must not read as per-episode summaries grouped under loose topics.
-  - Episode 1 has the same `关键金句 / 结论` quality as every other episode, including at least one source-language original sentence and an italicized translation/explanation line when useful. Translation lines must not include labels like `中文解释：`, `中文翻译：`, `中文翻译/解释：`, `英文解释：`, `英文翻译：`, or `英文翻译/解释：`.
+  - Episode 1 has the same `关键金句 / 结论` quality as every other episode, including meaningful source-language original sentences and italicized translation/explanation lines when useful. Translation lines must not include labels like `中文解释：`, `中文翻译：`, `中文翻译/解释：`, `英文解释：`, `英文翻译：`, or `英文翻译/解释：`.
   - Evidence anchors are meaningful: remove greetings, thanks, ad reads, housekeeping, closing pleasantries, and generic low-value anchors. Keep anchors with concrete claims, examples, mechanisms, numbers, decisions, disagreements, or strategic implications.
-  - If exact quote verification is weak, change the item to `转述结论` and keep timestamp evidence nearby.
+  - If exact quote verification is weak, return to transcript JSON and select exact, verifiable source lines; do not downgrade to `转述结论` unless a real transcript scan confirms no meaningful verifiable original quote exists.
 
 ## 5. Render And Audit
 
@@ -54,7 +58,7 @@
   - Expected main sections.
   - Episode heading count matches manifest.
   - Required labels match episode count.
-  - `关键金句 / 结论` exists for every episode including episode 1, and exact quotes are either source-language plus italicized unlabeled translation/explanation, or clearly marked paraphrases.
+  - `关键金句 / 结论` exists for every episode including episode 1, with meaningful source-language original quotes plus italicized unlabeled translation/explanation. `转述结论` is allowed only after transcript-level verification proves no meaningful quote exists.
   - Evidence anchors are substantive and do not contain low-value greetings/thanks/housekeeping as final anchors.
   - Pagination quality: if a heading or subtitle-like bold heading and the following body begin in the bottom quarter of a page, insert `<!-- pagebreak -->` before that heading and rerender. Do not force all major sections onto new pages; apply the break only when the heading position is too low.
   - PDF page count is plausible.
@@ -88,9 +92,10 @@
 - Always clean STD Downloads after report review and required delivery succeed:
   - `scripts/import_spotify_transcripts.py --move`
   - Verify `/Users/hannah/Downloads/Spotify Transcript Collector/` has zero JSON files.
+- Audit the current evidence pack's episode IDs in `data/transcripts/spotify_en/` and `data/transcripts/spotify_zh/` after cleanup. Confirm each language has at most one file per episode and report `duplicate_ids=0` for both directories. A missing complete Chinese transcript may be reported as a gap; an incomplete or duplicate file must not be retained to make coverage appear complete.
 - Mark manifests seen only after delivery gates pass:
   - `scripts/mark_manifest_seen.py <manifest>`
-- If any required external delivery is blocked and not skipped by the user, do not mark seen.
+- If any required external delivery is blocked and not skipped by the user, or transcript archive deduplication fails, do not mark seen.
 
 ## 9. Memory And Git
 
@@ -103,6 +108,7 @@
   - Drive verification.
   - Discord `notification_sent` ids.
   - Transcript cleanup result.
+  - Formal original/Chinese transcript counts and duplicate-ID audit result.
   - Mark-seen result.
   - Any root cause found during debugging.
 - For git:

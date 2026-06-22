@@ -10,13 +10,14 @@ This skill preserves the operating checklist for producing recurring Spotify pod
 - Checks git state, LaunchAgent state, and recent service logs.
 - Collects missing Spotify transcripts through the STD Chrome extension.
 - Enforces the correct STD workflow: open the Spotify episode detail page and click the native `Transcript` tab.
-- Imports transcript JSON files into the project archive.
+- Imports transcript JSON files into the project archive with strict deduplication: at most one original and one complete Chinese transcript per Spotify episode.
+- Rejects Chrome retry copies, `_zh_INCOMPLETE` files, and Chinese files with untranslated segments from the formal archive.
 - Generates and reviews the report with the project pipeline.
 - Renders final Word/PDF deliverables and audits formatting.
 - Archives PDFs to Zotero and verifies hashes.
 - Uploads Word files to Google Drive.
 - Sends PDFs to Discord through the live Discord Studio queue.
-- Cleans `/Users/hannah/Downloads/Spotify Transcript Collector/` after successful delivery.
+- Cleans `/Users/hannah/Downloads/Spotify Transcript Collector/` after successful delivery and verifies zero duplicate episode IDs in the formal archives.
 - Marks manifests seen only after required delivery gates pass.
 - Updates project memory at the end.
 
