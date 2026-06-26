@@ -24,7 +24,7 @@ Use this skill for Hannah's recurring Spotify podcast intelligence report workfl
 ## Hard Rules
 
 - Do not silently use lower-fidelity transcript/report fallbacks.
-- For STD transcripts, open each Spotify episode detail page and click Spotify's native `Transcript` tab. Search/list pages are not enough.
+- For STD transcripts, open each Spotify episode detail page and click Spotify's native `Transcript` tab. Search/list pages are not enough. Never declare a transcript missing after only the initial partial page render; reload the verified episode detail URL and wait about `6.5` seconds for Spotify's Description/Transcript/Chapters tab list before deciding.
 - The report main title is a delivery gate. It must be constructive, insight-led, and immediately communicate the report's central thesis. It must include an English translation. Do not use generic titles, run IDs, date piles, or vague labels such as only "Spotify 播客情报研报".
 - Every episode, including episode 1, must have `关键金句 / 结论` with meaningful source-language original sentences and translation/explanation lines when useful. Translation/explanation lines must be italicized and must not use prefix labels such as `中文解释：`, `中文翻译：`, `中文翻译/解释：`, `英文解释：`, `英文翻译：`, or `英文翻译/解释：`. Do not satisfy quote safety by downgrading to `转述结论`; first return to transcript JSON and select exact, verifiable source lines. Use `转述结论` only when a real transcript scan confirms no meaningful verifiable original quote exists.
 - Evidence anchors must be substantively useful. Do not include greetings, thanks, ad reads, housekeeping, ending pleasantries, repeated intros/outros, or generic "they discussed X" anchors unless the anchor contains a specific claim, example, mechanism, number, decision, or strategic implication.
