@@ -18,7 +18,7 @@
 - Run the late-arriving RSS audit against current RSS before accepting a manifest as complete:
   - `scripts/audit_late_rss_arrivals.py --since <previous-window-since> --until <current-window-until> --require-clean`
   - Include at least the current report window and the previous closed M/W/F window.
-  - If the audit finds any episode that now appears in RSS but was not manifested or marked seen, treat it as a hard blocker. Collect transcripts and add the episode to the latest/current report as the final episode, with a clear note that identifies its original intended M/W/F window, such as `迟到补入，原属 <YYMMDD> 窗口`. Do not create a separate supplement PDF by default. Only regenerate a past-window report instead when Hannah explicitly asks for that.
+  - If the audit finds any episode that now appears in RSS but was not manifested or marked seen, treat it as a hard blocker. Use `published_at` to identify the original fixed M/W/F window. If that window's report is not yet generated or archived, add the episode to that original report. If the original report is already completed/archived, or the gap is too old to reopen cleanly, append the episode to the latest report as the final episode and record `迟到补入，原属 <YYMMDD> 窗口`. Never merge two complete windows wholesale or hide the original date.
   - This check exists because some feeds can publish or refresh late while backdating `published_at`, which can make an episode belong to an already delivered report window even though it was absent from RSS during the original run.
 
 ## 3. Transcript Collection
@@ -36,6 +36,9 @@
   - Click the native Spotify `Transcript` tab.
   - Do not decide "no transcript" from the first partial DOM render. Reload the verified episode detail URL and wait about `6.5` seconds for Spotify's Description/Transcript/Chapters tab list; only declare missing after that tab list is available and no `Transcript` tab appears.
   - Wait for STD to download JSON files into `/Users/hannah/Downloads/Spotify Transcript Collector/`.
+  - Verify where the file actually landed. If STD instead produces `/Users/hannah/Downloads/download.json`, validate its target `spotifyEpisodeId` and metadata, move only that file into the original archive under a descriptive name, and compare SHA-256 before continuing. Do not import unrelated JSON or retain retry copies.
+  - If the Spotify title has changed, retain the manifest's RSS title and record the manually verified Spotify identity in `spotify_episode_id` / `spotify_episode_url`; the evidence builder uses the exact ID and fails closed on missing or duplicate identities.
+  - Perform collection through a permitted installed-plugin workflow rather than assigning the full queue to Hannah. Do not disable security controls or treat a blocked debugging interface as repaired merely because a separate permitted STD workflow succeeds.
   - Use one tab sequentially if Spotify complains about too many open tabs.
 - Import transcripts:
   - `scripts/import_spotify_transcripts.py`
@@ -65,6 +68,7 @@
   - Sections 3/4/5 are integrated cross-episode analysis, second-order thinking, and strategic conclusions. They must not read as per-episode summaries grouped under loose topics.
   - Episode 1 has the same `关键金句 / 结论` quality as every other episode, including meaningful source-language original sentences and italicized translation/explanation lines when useful. Translation lines must not include labels like `中文解释：`, `中文翻译：`, `中文翻译/解释：`, `英文解释：`, `英文翻译：`, or `英文翻译/解释：`.
   - Evidence anchors are meaningful: remove greetings, thanks, ad reads, housekeeping, closing pleasantries, and generic low-value anchors. Keep anchors with concrete claims, examples, mechanisms, numbers, decisions, disagreements, or strategic implications.
+  - Every English evidence anchor is a transcript-verifiable source sentence followed immediately by an unlabeled italic Chinese translation on its own line. Chinese-source anchors stay as one Chinese source line and are not redundantly translated.
   - If exact quote verification is weak, return to transcript JSON and select exact, verifiable source lines; do not downgrade to `转述结论` unless a real transcript scan confirms no meaningful verifiable original quote exists.
 
 ## 5. Render And Audit
@@ -79,6 +83,7 @@
   - Required labels match episode count.
   - `关键金句 / 结论` exists for every episode including episode 1, with meaningful source-language original quotes plus italicized unlabeled translation/explanation. `转述结论` is allowed only after transcript-level verification proves no meaningful quote exists.
   - Evidence anchors are substantive and do not contain low-value greetings/thanks/housekeeping as final anchors.
+  - Every English evidence anchor is followed immediately by an unlabeled italic Chinese translation; Chinese-source anchors are not duplicated. This must pass both the Markdown checker and the final DOCX audit.
   - Pagination quality: if a heading or subtitle-like bold heading and the following body begin in the bottom quarter of a page, insert `<!-- pagebreak -->` before that heading and rerender. Do not force all major sections onto new pages; apply the break only when the heading position is too low.
   - Line-breaking quality: punctuation must stay attached to the end of the preceding line in the final PDF. Do not accept punctuation as the first character on a new line; fix and rerender before delivery.
   - PDF page count is plausible.
@@ -113,6 +118,7 @@
   - `scripts/import_spotify_transcripts.py --move`
   - Verify `/Users/hannah/Downloads/Spotify Transcript Collector/` has zero JSON files.
 - Audit the current evidence pack's episode IDs in `data/transcripts/spotify_en/` and `data/transcripts/spotify_zh/` after cleanup. Confirm each language has at most one file per episode and report `duplicate_ids=0` for both directories. A missing complete Chinese transcript may be reported as a gap; an incomplete or duplicate file must not be retained to make coverage appear complete.
+- Run `scripts/audit_transcript_archive_integrity.py <evidence-pack> --require-clean`; it must confirm one original and one complete Chinese transcript per episode, with zero missing, duplicate, or incomplete IDs.
 - Rerun the late-arriving RSS audit after cleanup and before mark-seen. A clean result is required for completion.
 - Mark manifests seen only after delivery gates pass:
   - `scripts/mark_manifest_seen.py <manifest>`
