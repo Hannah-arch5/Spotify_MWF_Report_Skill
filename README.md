@@ -12,6 +12,9 @@ This skill preserves the operating checklist for producing recurring Spotify pod
 - Enforces the correct STD workflow: open the Spotify episode detail page and click the native `Transcript` tab.
 - Imports transcript JSON files into the project archive with strict deduplication: at most one original and one complete Chinese transcript per Spotify episode.
 - Rejects Chrome retry copies, `_zh_INCOMPLETE` files, and Chinese files with untranslated segments from the formal archive.
+- Prepares every pending report's original and Chinese transcripts before generating reports separately in date order.
+- Incrementally backs up English and Chinese subtitle archives to their designated Google Drive folders and verifies cloud sizes and checksums.
+- Keeps full Drive backups long-term, with verified semiannual local cleanup retaining approximately 6-12 months and protecting pending work.
 - Generates and reviews the report with the project pipeline.
 - Renders final Word/PDF deliverables and audits formatting.
 - Archives PDFs to Zotero and verifies hashes.
