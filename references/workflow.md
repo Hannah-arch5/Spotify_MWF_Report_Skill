@@ -81,7 +81,8 @@
 - If native Word Save/Export is unexpectedly disabled while the desktop is available, cancel the export dialog, use Word's Window -> Bring All to Front, then retry the same local PDF destination. This restored saving on 2026-10-25; AX `noWindowsAvailable` alone does not prove the Mac is locked. Do not change browser permissions or substitute a lower-fidelity PDF.
 - Convert suspicious non-verbatim quote blocks to explicit paraphrased conclusions rather than keeping them in quotation marks.
 - Before rendering, manually inspect the Markdown for the following hard gates:
-  - Main title is constructive and thesis-led: it should tell the user what this report is really about, not merely repeat the date/run/window. It must include an English translation.
+  - Main title is one natural, complete summary judgment of the issue's central finding, followed by an English translation. It must not contain dates, run/window identifiers, abstract word piles or reader-directed `应/必须/需要` instructions.
+  - Every episode has a `核心内容摘要` of 850-1050 non-whitespace characters in 4-7 natural paragraphs and an `情报价值点` of 350-500 non-whitespace characters in 2-3 natural paragraphs. These are locked ranges, not suggestions.
   - Sections 3/4/5 are integrated cross-episode analysis, second-order thinking, and strategic conclusions. They must not read as per-episode summaries grouped under loose topics.
   - Episode 1 has the same `关键金句 / 结论` quality as every other episode, including meaningful source-language original sentences and italicized translation/explanation lines when useful. Translation lines must not include labels like `中文解释：`, `中文翻译：`, `中文翻译/解释：`, `英文解释：`, `英文翻译：`, or `英文翻译/解释：`.
   - Evidence anchors are meaningful: remove greetings, thanks, ad reads, housekeeping, closing pleasantries, and generic low-value anchors. Keep anchors with concrete claims, examples, mechanisms, numbers, decisions, disagreements, or strategic implications.
@@ -94,7 +95,8 @@
 - Do not accept lower-fidelity PDF fallback for final delivery unless the user explicitly approves it.
 - Run `scripts/audit_delivery_report_format.py` on the DOCX and PDF.
 - Confirm:
-  - Main title is constructive, has English translation, and has no run ID/date pileup.
+  - Main title follows the locked one-sentence summary rule, has an English translation, and has no instruction tone, run ID or date pileup.
+  - Every episode passes the locked 850-1050 summary and 350-500 value ranges; title, quotes, evidence, order and Parts 3/4/5 remain unchanged during a length-only revision.
   - Expected main sections.
   - Episode heading count matches manifest.
   - Required labels match episode count.

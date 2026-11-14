@@ -16,6 +16,7 @@ This skill preserves the operating checklist for producing recurring Spotify pod
 - Incrementally backs up English and Chinese subtitle archives to their designated Google Drive folders and verifies cloud sizes and checksums.
 - Keeps full Drive backups long-term, with verified semiannual local cleanup retaining approximately 6-12 months and protecting pending work.
 - Generates and reviews the report with the project pipeline.
+- Locks confirmed editorial rules unless Hannah explicitly changes them, including one-sentence summary titles and per-episode ranges of 850-1050 characters for summaries and 350-500 for value analysis.
 - Renders final Word/PDF deliverables and audits formatting.
 - Archives PDFs to Zotero and verifies hashes.
 - Uploads Word files to Google Drive.
